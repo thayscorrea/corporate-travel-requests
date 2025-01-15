@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('message');
-            $table->enum('type', ['approval', 'cancellation']);
+            $table->enum('type', ['aprovado', 'cancelado']);
             $table->timestamps();
         });
     }
