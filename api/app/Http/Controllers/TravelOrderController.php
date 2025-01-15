@@ -38,6 +38,7 @@ class TravelOrderController extends Controller
 
         $order = TravelOrder::create(array_merge($validated, [
             'user_id' => Auth::id(),
+            'status' => 'solicitado',
         ]));
 
         return response()->json($order, 201);

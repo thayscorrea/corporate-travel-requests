@@ -9,7 +9,11 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $notifications = Notification::where('user_id', Auth::id())->get();
+        // $notifications = Notification::where('user_id', Auth::id())->get();
+        // return response()->json($notifications);
+
+        $notifications = Auth::user()->notifications;
+
         return response()->json($notifications);
     }
 

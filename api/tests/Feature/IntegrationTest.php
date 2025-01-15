@@ -6,6 +6,8 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\TravelOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Str;
 
 class IntegrationTest extends TestCase
 {
@@ -25,7 +27,7 @@ class IntegrationTest extends TestCase
         ]);
 
         $registerResponse->assertStatus(201)
-                         ->assertJsonStructure(['user' => ['id', 'name', 'email'], 'token']);
+            ->assertJsonStructure(['user' => ['id', 'name', 'email'], 'token']);
 
         // Log in with the new user
         $loginResponse = $this->postJson('/api/login', [
@@ -34,7 +36,7 @@ class IntegrationTest extends TestCase
         ]);
 
         $loginResponse->assertStatus(200)
-                      ->assertJsonStructure(['token']);
+            ->assertJsonStructure(['token']);
     }
 
     /**
@@ -43,7 +45,7 @@ class IntegrationTest extends TestCase
     public function test_user_can_create_and_fetch_travel_orders()
     {
         $user = User::factory()->create();
-        $this->actingAs($user, 'api');
+        $this->actingAs($user, 'sanctum');
 
         // Create a travel order
         $createResponse = $this->postJson('/api/travel-orders', [
@@ -54,14 +56,14 @@ class IntegrationTest extends TestCase
         ]);
 
         $createResponse->assertStatus(201)
-                       ->assertJsonStructure(['id', 'applicant_name', 'destination', 'departure_date', 'return_date', 'status']);
+            ->assertJsonStructure(['id', 'applicant_name', 'destination', 'departure_date', 'return_date', 'status']);
 
         // Fetch all travel orders
         $fetchResponse = $this->getJson('/api/travel-orders');
 
         $fetchResponse->assertStatus(200)
-                      ->assertJsonCount(1)
-                      ->assertJsonFragment(['destination' => 'New York']);
+            ->assertJsonCount(1)
+            ->assertJsonFragment(['destination' => 'New York']);
     }
 
     /**
@@ -72,7 +74,7 @@ class IntegrationTest extends TestCase
         $user = User::factory()->create();
         $travelOrder = TravelOrder::factory()->create(['user_id' => $user->id, 'status' => 'solicitado']);
 
-        $this->actingAs($user, 'api');
+        $this->actingAs($user, 'sanctum');
 
         // Update the travel order status
         $updateResponse = $this->patchJson("/api/travel-orders/{$travelOrder->id}/status", [
@@ -80,7 +82,7 @@ class IntegrationTest extends TestCase
         ]);
 
         $updateResponse->assertStatus(200)
-                       ->assertJsonFragment(['status' => 'aprovado']);
+            ->assertJsonFragment(['status' => 'aprovado']);
 
         $this->assertDatabaseHas('travel_orders', [
             'id' => $travelOrder->id,
@@ -96,13 +98,13 @@ class IntegrationTest extends TestCase
         $user = User::factory()->create();
         $travelOrder = TravelOrder::factory()->create(['user_id' => $user->id]);
 
-        $this->actingAs($user, 'api');
+        $this->actingAs($user, 'sanctum');
 
         // Delete the travel order
         $deleteResponse = $this->deleteJson("/api/travel-orders/{$travelOrder->id}");
 
         $deleteResponse->assertStatus(200)
-                       ->assertJsonFragment(['message' => 'Order deleted successfully']);
+            ->assertJsonFragment(['message' => 'Order deleted successfully']);
 
         $this->assertDatabaseMissing('travel_orders', [
             'id' => $travelOrder->id,
@@ -115,14 +117,23 @@ class IntegrationTest extends TestCase
     public function test_user_can_fetch_notifications()
     {
         $user = User::factory()->create();
-        $this->actingAs($user, 'api');
+        $this->actingAs($user, 'sanctum');
 
-        // Simulate notifications
-        $user->notifications()->create(["message" => "Your order is approved", "type" => "approval"]);
+        // Inserir notificação diretamente no banco
+        \DB::table('notifications')->insert([
+            'id' => Str::uuid()->toString(), // Gerar UUID para o campo id
+            'type' => 'aprovado',
+            'notifiable_id' => $user->id,
+            'notifiable_type' => \App\Models\User::class,
+            'data' => json_encode(['message' => 'Your order is approved', 'type' => 'aprovado']),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
+        // Buscar notificações
         $fetchResponse = $this->getJson('/api/notifications');
 
         $fetchResponse->assertStatus(200)
-                      ->assertJsonFragment(["message" => "Your order is approved"]);
+            ->assertJsonFragment(['message' => 'Your order is approved']);
     }
 }
