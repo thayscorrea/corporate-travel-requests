@@ -3,38 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use Notifiable;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'email', 'password',
     ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
-    public function travelOrders()
+    public function getJWTIdentifier()
     {
-        return $this->hasMany(TravelOrder::class);
+        return $this->getKey();
     }
 
-    public function createToken($name)
+    public function getJWTCustomClaims()
     {
-        $token = $this->tokens()->create([
-            'name' => $name,
-            'token' => hash('sha256', $plainTextToken = bin2hex(random_bytes(40))),
-            'abilities' => ['*'],
-        ]);
-
-        return new \Laravel\Sanctum\NewAccessToken($token, $plainTextToken);
+        return [];
     }
 }
