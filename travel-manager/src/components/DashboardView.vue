@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { updateTravelOrderStatus, fetchTravelOrders } from '@/services/api';
 
 export default {
     name: 'DashboardView',
@@ -55,9 +55,7 @@ export default {
     methods: {
         async fetchTravelOrders() {
             try {
-                const response = await axios.get(`/api/travel-orders`, {
-                    params: { status: this.statusFilter },
-                });
+                const response = await fetchTravelOrders({ status: this.statusFilter });
                 this.travelOrders = response.data;
             } catch (error) {
                 console.error('Error fetching travel orders:', error);
@@ -65,7 +63,7 @@ export default {
         },
         async updateStatus(orderId, status) {
             try {
-                await axios.patch(`/api/travel-orders/${orderId}/status`, { status });
+                await updateTravelOrderStatus(orderId, status);
                 this.fetchTravelOrders();
             } catch (error) {
                 console.error('Error updating status:', error);
@@ -78,7 +76,7 @@ export default {
         }
     },
     computed: {
-        travelOrders() {
+        travelOrdersfunc() {
             return this.$store.getters.getTravelOrders;
         },
     },

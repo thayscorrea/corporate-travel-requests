@@ -14,12 +14,22 @@
     <main>
       <router-view />
     </main>
+    <AlertView v-if="alert.message" :type="alert.type" :message="alert.message" />
   </div>
 </template>
 
 <script>
+import AlertView from '@/components/AlertView.vue';
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'App',
+  components: {
+    AlertView,
+  },
+  computed: {
+    ...mapGetters(['alert']),
+  },
 };
 </script>
 

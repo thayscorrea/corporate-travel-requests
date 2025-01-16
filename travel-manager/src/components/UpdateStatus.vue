@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { updateTravelOrderStatus } from '@/services/api';
 
 export default {
     name: 'UpdateStatus',
@@ -36,7 +36,7 @@ export default {
     methods: {
         async updateStatus() {
             try {
-                await axios.patch(`/api/travel-orders/${this.orderId}/status`, { status: this.status });
+                await updateTravelOrderStatus(this.orderId, this.status);
                 alert('Order status updated successfully!');
                 this.orderId = '';
                 this.status = '';

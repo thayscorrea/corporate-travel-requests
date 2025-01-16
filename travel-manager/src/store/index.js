@@ -5,6 +5,10 @@ const store = createStore({
         token: localStorage.getItem('token') || null,
         user: null,
         travelOrders: [],
+        alert: {
+            message: '',
+            type: '',
+        },
     },
     mutations: {
         setToken(state, token) {
@@ -15,6 +19,14 @@ const store = createStore({
         },
         setTravelOrders(state, orders) {
             state.travelOrders = orders;
+        },
+        setAlert(state, { message, type }) {
+            state.alert.message = message;
+            state.alert.type = type;
+        },
+        clearAlert(state) {
+            state.alert.message = '';
+            state.alert.type = '';
         },
     },
     actions: {
@@ -42,6 +54,10 @@ const store = createStore({
                 }
             }
         },
+        showAlert({ commit }, { message, type }) {
+            commit('setAlert', { message, type });
+            setTimeout(() => commit('clearAlert'), 5000); // Remove o alerta após 5 segundos
+        },
     },
     getters: {
         isAuthenticated(state) {
@@ -49,6 +65,9 @@ const store = createStore({
         },
         getTravelOrders(state) {
             return state.travelOrders;
+        },
+        alert(state) {
+            return state.alert;
         },
     },
 });

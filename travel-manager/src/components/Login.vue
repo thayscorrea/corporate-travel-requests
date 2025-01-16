@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { registerUser, loginUser } from '@/services/api';
 
 export default {
     name: 'AuthContainer',
@@ -65,28 +65,27 @@ export default {
     methods: {
         async loginUser() {
             try {
-                const response = await axios.post('/api/login', {
-                    email: this.loginEmail,
-                    password: this.loginPassword,
-                });
-
+                const response = await loginUser({ email: this.email, password: this.password });
                 const token = response.data.access_token;
-                this.$store.dispatch('saveToken', token); 
-                alert('Login successful!');
-                this.$router.push('/dashboard'); // Redirect to dashboard
+                this.$store.dispatch('saveToken', token);
+
+                this.$store.dispatch('showAlert', { message: 'Login realizado com sucesso!', type: 'success' });
+
+                setTimeout(() => this.$router.push('/dashboard'), 2000);
             } catch (error) {
+                this.$store.dispatch('showAlert', { message: 'Erro ao realizar o login. Por favor, verifique suas credenciais e tente novamente.', type: 'error' });
+
                 console.error('Error during login:', error);
-                alert('Login failed. Please check your credentials and try again.');
             }
         },
         async registerUser() {
             try {
-                await axios.post('/api/register', {
+                await registerUser({
                     name: this.registerName,
                     email: this.registerEmail,
                     password: this.registerPassword,
                     password_confirmation: this.registerPasswordConfirmation,
-                });
+                })
 
                 alert('Registration successful! You can now log in.');
                 this.registerName = '';

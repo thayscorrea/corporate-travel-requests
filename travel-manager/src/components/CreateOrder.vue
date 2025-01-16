@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { createTravelOrder } from '@/services/api';
 
 export default {
     name: 'CreateOrder',
@@ -45,7 +45,7 @@ export default {
     methods: {
         async createOrder() {
             try {
-                await axios.post('/api/travel-orders', this.order);
+                await createTravelOrder(this.order);
                 alert('Order created successfully!');
                 this.$router.push('/dashboard'); // Redirect to Dashboard
             } catch (error) {
