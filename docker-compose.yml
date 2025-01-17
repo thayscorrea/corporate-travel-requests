@@ -1,5 +1,5 @@
 services:
-  backend:
+  app:
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -21,6 +21,18 @@ services:
       - DB_DATABASE=travel_manager
       - DB_USERNAME=root
       - DB_PASSWORD=root
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "9001:80"
+    volumes:
+      - ./api:/var/www
+      - ./api/nginx:/etc/nginx/conf.d
+    networks:
+      - app-network
 
   db:
     image: mysql:8.0

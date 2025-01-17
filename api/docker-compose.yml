@@ -10,6 +10,8 @@ services:
       - .:/var/www
       - ./vendor:/var/www/vendor
       - ./storage:/var/www/storage
+    ports:
+      - "9000:9000"
     networks:
       - laravel
     environment:
@@ -36,17 +38,17 @@ services:
     ports:
       - "3507:3306"
 
-  nginx:
-    image: nginx:alpine
-    container_name: laravel_nginx
-    restart: unless-stopped
-    ports:
-      - "9000:80"
-    volumes:
-      - .:/var/www
-      - ./nginx:/etc/nginx/conf.d
-    networks:
-      - laravel
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: laravel_nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9000:80"
+  #   volumes:
+  #     - .:/var/www
+  #     - ./nginx:/etc/nginx/conf.d
+  #   networks:
+  #     - laravel
 
 networks:
   laravel:
