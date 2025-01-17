@@ -2,7 +2,10 @@ import axios from 'axios';
 
 // Cria uma instância do Axios
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api', // Substitua pelo endpoint da sua API Laravel
+    baseURL: 'http://localhost:9001/api', // Substitua pelo endpoint da sua API Laravel
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 // Adiciona o token JWT aos cabeçalhos

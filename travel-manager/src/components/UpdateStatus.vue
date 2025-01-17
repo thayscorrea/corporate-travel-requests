@@ -1,4 +1,5 @@
 <template>
+    <MenuView />
     <div class="update-status">
         <h1>Update Order Status</h1>
         <form @submit.prevent="updateStatus">
@@ -24,9 +25,13 @@
 
 <script>
 import { updateTravelOrderStatus } from '@/services/api';
+import MenuView from '@/components/MenuView.vue';
 
 export default {
     name: 'UpdateStatus',
+    components: {
+        MenuView,
+    },
     data() {
         return {
             orderId: '',

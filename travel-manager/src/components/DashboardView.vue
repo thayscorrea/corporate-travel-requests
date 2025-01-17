@@ -1,4 +1,5 @@
 <template>
+    <MenuView />
     <div class="dashboard">
         <h1>Dashboard</h1>
         <div class="filters">
@@ -43,9 +44,13 @@
 
 <script>
 import { updateTravelOrderStatus, fetchTravelOrders } from '@/services/api';
+import MenuView from '@/components/MenuView.vue';
 
 export default {
     name: 'DashboardView',
+    components: {
+        MenuView,
+    },
     data() {
         return {
             travelOrders: [],

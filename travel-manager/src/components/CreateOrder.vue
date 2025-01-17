@@ -1,4 +1,5 @@
 <template>
+    <MenuView />
     <div class="create-order">
         <h1>Create Travel Order</h1>
         <form @submit.prevent="createOrder">
@@ -29,9 +30,14 @@
 
 <script>
 import { createTravelOrder } from '@/services/api';
+import MenuView from '@/components/MenuView.vue';
+
 
 export default {
     name: 'CreateOrder',
+    components: {
+        MenuView,
+    },
     data() {
         return {
             order: {

@@ -1,6 +1,6 @@
 <template>
     <div class="auth-container">
-        <div class="login">
+        <div v-if="showLogin" class="login">
             <h1>Login</h1>
             <form @submit.prevent="loginUser">
                 <div class="form-group">
@@ -9,19 +9,25 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password:</label>
+                    <label for="password">Senha:</label>
                     <input type="password" id="password" v-model="loginPassword" required />
                 </div>
 
-                <button type="submit">Login</button>
+                <div class="buttons">
+                    <button type="submit">Login</button>
+                </div>
+
+                <p>
+                    Não tem uma conta? <a href="#" @click="toggleView">Cadastre-se</a>
+                </p>
             </form>
         </div>
 
-        <div class="register">
-            <h1>Register</h1>
+        <div v-if="!showLogin" class="register">
+            <h1>Cadastre-se</h1>
             <form @submit.prevent="registerUser">
                 <div class="form-group">
-                    <label for="register_name">Name:</label>
+                    <label for="register_name">Nome:</label>
                     <input type="text" id="register_name" v-model="registerName" required />
                 </div>
 
@@ -31,17 +37,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="register_password">Password:</label>
+                    <label for="register_password">Senha:</label>
                     <input type="password" id="register_password" v-model="registerPassword" required />
                 </div>
 
                 <div class="form-group">
-                    <label for="register_password_confirmation">Confirm Password:</label>
+                    <label for="register_password_confirmation">Confirme a Senha:</label>
                     <input type="password" id="register_password_confirmation" v-model="registerPasswordConfirmation"
                         required />
                 </div>
 
-                <button type="submit">Register</button>
+                <button type="submit">Cadastrar</button>
+
+                <p>
+                    Já tem sua conta? <a href="#" @click="toggleView">Login</a>
+                </p>
             </form>
         </div>
     </div>
@@ -54,6 +64,7 @@ export default {
     name: 'AuthContainer',
     data() {
         return {
+            showLogin: true,
             loginEmail: '',
             loginPassword: '',
             registerName: '',
@@ -63,6 +74,9 @@ export default {
         };
     },
     methods: {
+        toggleView() {
+            this.showLogin = !this.showLogin;
+        },
         async loginUser() {
             try {
                 const response = await loginUser({ email: this.email, password: this.password });
@@ -87,14 +101,14 @@ export default {
                     password_confirmation: this.registerPasswordConfirmation,
                 })
 
-                alert('Registration successful! You can now log in.');
+                this.$store.dispatch('showAlert', { message: 'Registro realizado com sucesso!', type: 'success' });
                 this.registerName = '';
                 this.registerEmail = '';
                 this.registerPassword = '';
                 this.registerPasswordConfirmation = '';
             } catch (error) {
                 console.error('Error during registration:', error);
-                alert('Registration failed. Please try again.');
+                this.$store.dispatch('showAlert', { message: 'Erro ao realizar o cadastro. Por favor, tente novamente.', type: 'error' });
             }
         },
     },
@@ -104,10 +118,10 @@ export default {
 <style scoped>
 .auth-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     padding: 20px;
     max-width: 900px;
-    margin: 0 auto;
+    margin: auto;
 }
 
 .login,
@@ -131,6 +145,7 @@ h1 {
 label {
     display: block;
     margin-bottom: 5px;
+    text-align: left;
 }
 
 input {
@@ -148,9 +163,20 @@ button {
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
+    margin-bottom: 15px;
 }
 
 button:hover {
     background-color: #0056b3;
+}
+
+.buttons {
+    margin-top: 30%;
+}
+
+a {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
 }
 </style>
