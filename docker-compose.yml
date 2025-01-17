@@ -1,17 +1,17 @@
 services:
-  app:
+  backend:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     container_name: backend
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - .:/var/www
-      - ./vendor:/var/www/vendor
-      - ./storage:/var/www/storage
+      - ./api:/var/www
+      - ./api/vendor:/var/www/vendor
+      - ./api/storage:/var/www/storage
     networks:
-      - laravel
+      - app-network
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
@@ -32,27 +32,30 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - laravel
+      - app-network
     ports:
-      - "3507:3306"
+      - "3307:3306"
 
-  nginx:
-    image: nginx:alpine
-    container_name: laravel_nginx
+  frontend:
+    build:
+      context: ./travel-manager
+      dockerfile: Dockerfile
+    container_name: frontend
     restart: unless-stopped
-    ports:
-      - "9000:80"
+    working_dir: /app
     volumes:
-      - .:/var/www
-      - ./nginx:/etc/nginx/conf.d
+      - ./travel-manager:/app
+      - /app/node_modules
+    ports:
+      - "8080:8080"
     networks:
-      - laravel
+      - app-network
+    environment:
+      - NODE_ENV=development
 
 networks:
-  laravel:
+  app-network:
     driver: bridge
 
 volumes:
   dbdata:
-
-
