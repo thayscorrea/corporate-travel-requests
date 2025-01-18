@@ -37,6 +37,7 @@ export async function registerUser(credentials) {
 }
 
 export async function loginUser(credentials) {
+    console.log(credentials)
     return api.post('/login', credentials);
 }
 

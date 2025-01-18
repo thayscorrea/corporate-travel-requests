@@ -79,7 +79,7 @@ export default {
         },
         async loginUser() {
             try {
-                const response = await loginUser({ email: this.email, password: this.password });
+                const response = await loginUser({ email: this.loginEmail, password: this.loginPassword});
                 const token = response.data.access_token;
                 this.$store.dispatch('saveToken', token);
 
