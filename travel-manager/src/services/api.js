@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Cria uma instância do Axios
 const api = axios.create({
-    baseURL: 'http://localhost:9001/api', // Substitua pelo endpoint da sua API Laravel
+    baseURL: 'http://localhost:9001/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -32,12 +32,15 @@ export async function fetchTravelOrders(filters = {}) {
     return api.get('/travel-orders', { params: filters });
 }
 
+export async function fetchUsers() {
+    return api.get('/users');
+}
+
 export async function registerUser(credentials) {
     return api.post('/register', credentials);
 }
 
 export async function loginUser(credentials) {
-    console.log(credentials)
     return api.post('/login', credentials);
 }
 

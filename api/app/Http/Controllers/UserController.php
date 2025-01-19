@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+   
+    public function index()
+    {
+        return response()->json(User::query()->get());
+    }
+   
     public function register(Request $request)
     {
         $validated = $request->validate([

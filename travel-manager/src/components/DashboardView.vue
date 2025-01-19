@@ -3,9 +3,9 @@
     <div class="dashboard">
         <h1>Dashboard</h1>
         <div class="filters">
-            <label for="statusFilter">Filter by Status:</label>
+            <label for="statusFilter">Filtrar por Status:</label>
             <select id="statusFilter" v-model="statusFilter" @change="fetchTravelOrders">
-                <option value="">All</option>
+                <option value="">Todos</option>
                 <option value="solicitado">Solicitado</option>
                 <option value="aprovado">Aprovado</option>
                 <option value="cancelado">Cancelado</option>
@@ -16,12 +16,12 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Applicant</th>
-                    <th>Destination</th>
-                    <th>Departure Date</th>
-                    <th>Return Date</th>
+                    <th>Nome do solicitante</th>
+                    <th>Destino</th>
+                    <th>Data de ida</th>
+                    <th>Data de volta</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,8 +33,8 @@
                     <td>{{ order.return_date }}</td>
                     <td>{{ order.status }}</td>
                     <td>
-                        <button @click="updateStatus(order.id, 'aprovado')">Approve</button>
-                        <button @click="updateStatus(order.id, 'cancelado')">Cancel</button>
+                        <button @click="updateStatus(order.id, 'aprovado')">Aprovado</button>
+                        <button @click="updateStatus(order.id, 'cancelado')">Cancelado</button>
                     </td>
                 </tr>
             </tbody>
@@ -71,7 +71,7 @@ export default {
                 await updateTravelOrderStatus(orderId, status);
                 this.fetchTravelOrders();
             } catch (error) {
-                console.error('Error updating status:', error);
+                console.error('Erro ao alterar status do pedido de viagem:', error);
             }
         },
     },

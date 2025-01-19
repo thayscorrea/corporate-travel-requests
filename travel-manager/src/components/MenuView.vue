@@ -4,8 +4,8 @@
         <ul>
           <li><router-link to="/">Login</router-link></li>
           <li><router-link to="/dashboard">Dashboard</router-link></li>
-          <li><router-link to="/create-order">Create Order</router-link></li>
-          <li><router-link to="/update-status">Update Status</router-link></li>
+          <li><router-link to="/create-order">Criar Pedido</router-link></li>
+          <li><router-link to="/update-status">Atualizar Status</router-link></li>
         </ul>
       </nav>
     </header>

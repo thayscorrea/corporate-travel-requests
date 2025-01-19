@@ -1,29 +1,34 @@
 <template>
     <MenuView />
     <div class="create-order">
-        <h1>Create Travel Order</h1>
+        <h1>Criar pedido de viagem</h1>
         <form @submit.prevent="createOrder">
             <div class="form-group">
-                <label for="applicant_name">Applicant Name:</label>
-                <input type="text" id="applicant_name" v-model="order.applicant_name" required />
+                <label for="applicant_name">Nome do solicitante:</label>
+                <input type="text" id="applicant_name" v-model="order.applicant_name" @input="fetchUsers" required />
+                <ul v-if="suggestedUsers.length > 0">
+                    <li v-for="user in suggestedUsers" :key="user.id" @click="selectUser(user)">
+                        {{ user.name }}
+                    </li>
+                </ul>
             </div>
 
             <div class="form-group">
-                <label for="destination">Destination:</label>
+                <label for="destination">Destino:</label>
                 <input type="text" id="destination" v-model="order.destination" required />
             </div>
 
             <div class="form-group">
-                <label for="departure_date">Departure Date:</label>
+                <label for="departure_date">Data de ida:</label>
                 <input type="date" id="departure_date" v-model="order.departure_date" required />
             </div>
 
             <div class="form-group">
-                <label for="return_date">Return Date:</label>
+                <label for="return_date">Data de volta:</label>
                 <input type="date" id="return_date" v-model="order.return_date" required />
             </div>
 
-            <button type="submit">Create Order</button>
+            <button type="submit">Cadastrar</button>
         </form>
     </div>
 </template>
@@ -46,17 +51,35 @@ export default {
                 departure_date: '',
                 return_date: '',
             },
+            suggestedUsers: []
         };
     },
     methods: {
+        async fetchUsers() {
+            if (this.order.applicant_name.length > 2) { // Start fetching after 2 characters
+                try {
+                    const response = await fetch(`/users?name=${this.order.applicant_name}`);
+                    const data = await response.json();
+                    this.suggestedUsers = data;
+                } catch (error) {
+                    console.error('Error fetching users:', error);
+                }
+            } else {
+                this.suggestedUsers = [];
+            }
+        },
+        selectUser(user) {
+            this.order.applicant_name = user.name;
+            this.suggestedUsers = [];
+        },
         async createOrder() {
             try {
                 await createTravelOrder(this.order);
-                alert('Order created successfully!');
+                alert('Pedido de viagem criado com sucesso!');
                 this.$router.push('/dashboard'); // Redirect to Dashboard
             } catch (error) {
                 console.error('Error creating order:', error);
-                alert('Failed to create order. Please try again.');
+                alert('Falha ao criar pedido de viagem. Por favor, tente novamente.');
             }
         },
     },
@@ -81,6 +104,7 @@ h1 {
 label {
     display: block;
     margin-bottom: 5px;
+    text-align: left;
 }
 
 input {

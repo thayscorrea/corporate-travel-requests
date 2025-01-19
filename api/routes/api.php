@@ -18,6 +18,10 @@ Route::middleware('auth:api')->group(function () {
 
 // Protected routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {
+
+    // Users routes
+    Route::get('/users', [UserController::class, 'index']);
+
     // Travel order routes
     Route::get('/travel-orders', [TravelOrderController::class, 'index']);
     Route::post('/travel-orders', [TravelOrderController::class, 'store']);
