@@ -10,6 +10,9 @@
                 <option value="aprovado">Aprovado</option>
                 <option value="cancelado">Cancelado</option>
             </select>
+
+            <label for="destinationFilter">Filtrar por Destino:</label>
+            <input id="destinationFilter" v-model="destinationFilter" @input="applyFilter" placeholder="Digite o destino" />
         </div>
 
         <table>
@@ -39,8 +42,8 @@
                     <td>{{ order.return_date }}</td>
                     <td>{{ order.status }}</td>
                     <td>
-                        <button @click="updateStatus(order.id, 'aprovado')">Aprovar</button>
-                        <button @click="updateStatus(order.id, 'cancelado')">Cancelar</button>
+                        <button class="button-ap" @click="updateStatus(order.id, 'aprovado')">Aprovar</button>
+                        <button class="button-rp" @click="updateStatus(order.id, 'cancelado')">Cancelar</button>
                     </td>
                 </tr>
             </tbody>
@@ -61,15 +64,23 @@ export default {
         return {
             travelOrders: [],
             statusFilter: '',
+            destinationFilter: '',
             loading: false,
         };
     },
     computed: {
         filteredOrders() {
-            if (!this.statusFilter) {
-                return this.travelOrders;
+            let filtered = this.travelOrders;
+
+            if (this.statusFilter) {
+                filtered = filtered.filter(order => order.status === this.statusFilter);
             }
-            return this.travelOrders.filter(order => order.status === this.statusFilter);
+
+            if (this.destinationFilter) {
+                filtered = filtered.filter(order => order.destination.toLowerCase().includes(this.destinationFilter.toLowerCase()));
+            }
+
+            return filtered;
         },
     },
     methods: {
@@ -87,7 +98,7 @@ export default {
         },
         applyFilter() {
             // A filtragem é feita automaticamente pela propriedade computada "filteredOrders"
-            console.log(`Filtro aplicado: ${this.statusFilter}`);
+            console.log(`Filtro aplicado: Status - ${this.statusFilter}, Destino - ${this.destinationFilter}`);
         },
         async updateStatus(orderId, status) {
             try {
@@ -113,6 +124,9 @@ export default {
 
 .filters {
     margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
 table {
@@ -134,5 +148,21 @@ th {
 
 td button {
     margin-right: 5px;
+}
+
+.button-ap {
+    background: green;
+    color: white;
+    border: none;
+    padding: 3%;
+    border-radius: 5px;
+}
+
+.button-rp {
+    background:#9b0404;
+    color: white;
+    border: none;
+    padding: 3%;
+    border-radius: 5px;
 }
 </style>
