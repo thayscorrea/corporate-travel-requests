@@ -4,7 +4,7 @@
         <h1>Dashboard</h1>
         <div class="filters">
             <label for="statusFilter">Filtrar por Status:</label>
-            <select id="statusFilter" v-model="statusFilter" @change="fetchTravelOrders">
+            <select id="statusFilter" v-model="statusFilter" @change="applyFilter">
                 <option value="">Todos</option>
                 <option value="solicitado">Solicitado</option>
                 <option value="aprovado">Aprovado</option>
@@ -28,10 +28,10 @@
                 <tr v-if="loading">
                     <td colspan="7">Carregando...</td>
                 </tr>
-                <tr v-if="!loading && travelOrders.length === 0">
+                <tr v-if="!loading && filteredOrders.length === 0">
                     <td colspan="7">Nenhum dado encontrado.</td>
                 </tr>
-                <tr v-for="order in travelOrders" :key="order.id">
+                <tr v-for="order in filteredOrders" :key="order.id">
                     <td>{{ order.id }}</td>
                     <td>{{ order.applicant_name }}</td>
                     <td>{{ order.destination }}</td>
@@ -64,11 +64,19 @@ export default {
             loading: false,
         };
     },
+    computed: {
+        filteredOrders() {
+            if (!this.statusFilter) {
+                return this.travelOrders;
+            }
+            return this.travelOrders.filter(order => order.status === this.statusFilter);
+        },
+    },
     methods: {
         async fetchTravelOrders() {
             this.loading = true;
             try {
-                const response = await fetchTravelOrders({ status: this.statusFilter });
+                const response = await fetchTravelOrders();
                 this.travelOrders = response.data;
             } catch (error) {
                 console.error('Erro ao buscar os pedidos de viagem:', error);
@@ -76,6 +84,10 @@ export default {
             } finally {
                 this.loading = false;
             }
+        },
+        applyFilter() {
+            // A filtragem é feita automaticamente pela propriedade computada "filteredOrders"
+            console.log(`Filtro aplicado: ${this.statusFilter}`);
         },
         async updateStatus(orderId, status) {
             try {

@@ -48,7 +48,7 @@ class TravelOrderController extends Controller
 
     public function show($id)
     {
-        $order = TravelOrder::where('user_id', Auth::id())->findOrFail($id);
+        $order = TravelOrder::findOrFail($id);
         return response()->json($order);
     }
 
