@@ -75,12 +75,10 @@ export default {
             }
         },
     },
-    mounted() {
-        fetchTravelOrders();
-        
-        // if (this.$store.getters.isAuthenticated) {
-            // this.$store.dispatch('fetchTravelOrders');
-        // }
+    mounted() {        
+        if (this.$store.getters.isAuthenticated) {
+            this.$store.dispatch('fetchTravelOrders');
+        }
     },
     computed: {
         travelOrdersfunc() {

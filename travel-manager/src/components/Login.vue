@@ -79,7 +79,7 @@ export default {
         },
         async loginUser() {
             try {
-                const response = await loginUser({ email: this.loginEmail, password: this.loginPassword});
+                const response = await loginUser({ email: this.loginEmail, password: this.loginPassword });
                 const token = response.data.token;
                 this.$store.dispatch('saveToken', token);
 
@@ -131,6 +131,9 @@ export default {
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
+    -webkit-box-shadow: 0px 3px 5px 0px rgba(184, 175, 184, 1);
+    -moz-box-shadow: 0px 3px 5px 0px rgba(184, 175, 184, 1);
+    box-shadow: 0px 3px 5px 0px rgba(184, 175, 184, 1);
 }
 
 h1 {
@@ -149,7 +152,7 @@ label {
 }
 
 input {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;

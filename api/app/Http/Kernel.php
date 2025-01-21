@@ -18,7 +18,8 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrustProxies::class,
 
         // Validates the request's content type
-        \Illuminate\Http\Middleware\HandleCors::class, // Laravel's native CORS handler
+        // \Illuminate\Http\Middleware\HandleCors::class, // Laravel's native CORS handler
+        \App\Http\Middleware\HandleCors::class,
 
         // Handles maintenance mode
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
