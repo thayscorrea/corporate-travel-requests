@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'travel-manager/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     // Métodos HTTP permitidos (GET, POST, etc.)
     'allowed_methods' => ['*'],
@@ -22,5 +22,5 @@ return [
     'max_age' => 0,
 
     // Habilitar suporte a credenciais (como cookies e autenticação baseada em sessão)
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 ];

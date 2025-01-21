@@ -10,21 +10,23 @@ class TravelOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $query = TravelOrder::query()->where('user_id', Auth::id());
+        return response()->json(TravelOrder::query()->get());
 
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
+        // $query = TravelOrder::query()->where('user_id', Auth::id());
 
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('departure_date', [$request->start_date, $request->end_date]);
-        }
+        // if ($request->has('status')) {
+        //     $query->where('status', $request->status);
+        // }
 
-        if ($request->has('destination')) {
-            $query->where('destination', 'like', "%{$request->destination}%");
-        }
+        // if ($request->has('start_date') && $request->has('end_date')) {
+        //     $query->whereBetween('departure_date', [$request->start_date, $request->end_date]);
+        // }
 
-        return response()->json($query->get());
+        // if ($request->has('destination')) {
+        //     $query->where('destination', 'like', "%{$request->destination}%");
+        // }
+
+        // return response()->json($query->get());
     }
 
     public function store(Request $request)
