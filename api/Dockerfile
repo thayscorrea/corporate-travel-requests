@@ -1,52 +1,40 @@
-# Usar imagem base do PHP
 FROM php:8.2-fpm
 
-# Instalar dependências do sistema
+# Instala dependências do sistema
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
+    build-essential \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libonig-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev
+    git \
+    curl
 
-# Instalar extensões do PHP necessárias para Laravel
-RUN docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    zip
+# Instala extensões PHP necessárias
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Instalar o Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Instala Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Limpar o cache do Composer
-RUN composer clear-cache
-
-# Definir diretório de trabalho
+# Define o diretório de trabalho
 WORKDIR /var/www
 
-# Copiar os arquivos do projeto
+# Copia os arquivos do aplicativo
 COPY . .
 
-# Instalar dependências do Laravel
-RUN composer install --no-dev --optimize-autoloader
+# Instala as dependências do Composer
+RUN composer install --no-scripts --no-autoloader
 
-# Configurar permissões para o diretório de trabalho
-RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
+# Gera autoload
+RUN composer dump-autoload --optimize
 
-# Expor a porta
+# Define permissões
+RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www
+
+# Expõe a porta 9000 e inicia o PHP-FPM
 EXPOSE 9000
-
-# Comando padrão do container
 CMD ["php-fpm"]

@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build:
@@ -12,20 +14,31 @@ services:
       - ./api/storage:/var/www/storage
     networks:
       - app-network
+    depends_on:
+      - mysql
+    env_file:
+      - ./api/.env
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
     environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - APP_KEY=base64:MRf2HDYSEDvMHipqRe4GRFHUITyFpUaX6RX5kRGSKfQ=
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_DATABASE=travel_manager
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: travel_manager
+    volumes:
+      - db_data:/var/lib/mysql
+      - /usr/share/zoneinfo:/usr/share/zoneinfo:ro
+    networks:
+      - app-network
+    ports:
+      - "3307:3306"
 
   nginx:
     image: nginx:alpine
     container_name: laravel_nginx
     restart: unless-stopped
+    platform: linux/amd64
     ports:
       - "9001:80"
     volumes:
@@ -33,20 +46,6 @@ services:
       - ./api/nginx:/etc/nginx/conf.d
     networks:
       - app-network
-
-  db:
-    image: mysql:8.0
-    container_name: mysql-db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: travel_manager
-    volumes:
-      - dbdata:/var/lib/mysql
-    networks:
-      - app-network
-    ports:
-      - "3307:3306"
 
   frontend:
     build:
@@ -70,4 +69,4 @@ networks:
     driver: bridge
 
 volumes:
-  dbdata:
+  db_data:
