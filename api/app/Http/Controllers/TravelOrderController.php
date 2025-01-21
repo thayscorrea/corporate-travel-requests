@@ -54,19 +54,25 @@ class TravelOrderController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        $travelOrder = TravelOrder::find($id);
+
+        if (!$travelOrder) {
+            return response()->json(['error' => 'Travel order not found'], 404);
+        }
+
         $validated = $request->validate([
             'status' => 'required|in:aprovado,cancelado',
         ]);
 
-        $order = TravelOrder::where('user_id', Auth::id())->findOrFail($id);
+        // $order = TravelOrder::where('user_id', Auth::id())->findOrFail($id);
 
-        if ($order->status === 'aprovado' && $validated['status'] === 'cancelado') {
+        if ($travelOrder->status === 'aprovado' && $validated['status'] === 'cancelado') {
             return response()->json(['message' => 'Não é possível cancelar um pedido aprovado!'], 422);
         }
 
-        $order->update(['status' => $validated['status']]);
+        $travelOrder->update(['status' => $validated['status']]);
 
-        return response()->json($order);
+        return response()->json($travelOrder);
     }
 
     public function destroy($id)

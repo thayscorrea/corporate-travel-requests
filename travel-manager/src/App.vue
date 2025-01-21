@@ -1,9 +1,10 @@
 <template>
   <div id="app">
+    <AlertView v-if="alert.message" :type="alert.type" :message="alert.message" />
+
     <main>
       <router-view />
     </main>
-    <AlertView v-if="alert.message" :type="alert.type" :message="alert.message" />
   </div>
 </template>
 

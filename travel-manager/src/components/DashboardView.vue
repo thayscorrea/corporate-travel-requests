@@ -25,6 +25,12 @@
                 </tr>
             </thead>
             <tbody>
+                <tr v-if="loading">
+                    <td colspan="7">Carregando...</td>
+                </tr>
+                <tr v-if="!loading && travelOrders.length === 0">
+                    <td colspan="7">Nenhum dado encontrado.</td>
+                </tr>
                 <tr v-for="order in travelOrders" :key="order.id">
                     <td>{{ order.id }}</td>
                     <td>{{ order.applicant_name }}</td>
@@ -33,8 +39,8 @@
                     <td>{{ order.return_date }}</td>
                     <td>{{ order.status }}</td>
                     <td>
-                        <button @click="updateStatus(order.id, 'aprovado')">Aprovado</button>
-                        <button @click="updateStatus(order.id, 'cancelado')">Cancelado</button>
+                        <button @click="updateStatus(order.id, 'aprovado')">Aprovar</button>
+                        <button @click="updateStatus(order.id, 'cancelado')">Cancelar</button>
                     </td>
                 </tr>
             </tbody>
@@ -55,35 +61,35 @@ export default {
         return {
             travelOrders: [],
             statusFilter: '',
+            loading: false,
         };
     },
     methods: {
         async fetchTravelOrders() {
+            this.loading = true;
             try {
                 const response = await fetchTravelOrders({ status: this.statusFilter });
                 this.travelOrders = response.data;
             } catch (error) {
-                console.error('Error fetching travel orders:', error);
+                console.error('Erro ao buscar os pedidos de viagem:', error);
+                this.travelOrders = [];
+            } finally {
+                this.loading = false;
             }
         },
         async updateStatus(orderId, status) {
             try {
-                await updateTravelOrderStatus(orderId, status);
+                const response = await updateTravelOrderStatus(orderId, status);
                 this.fetchTravelOrders();
             } catch (error) {
-                console.error('Erro ao alterar status do pedido de viagem:', error);
+                this.$store.dispatch('showAlert', { message: 'Não é possível cancelar um pedido aprovado!', type: 'error' });
+
+                console.error('Erro ao atualizar o status do pedido de viagem:', error);
             }
         },
     },
-    mounted() {    
-        if (this.$store.getters.isAuthenticated) {
-            fetchTravelOrders(); 
-        }
-    },
-    computed: {
-        travelOrdersfunc() {
-            return this.$store.getters.getTravelOrders;
-        },
+    mounted() {
+        this.fetchTravelOrders();
     },
 };
 </script>

@@ -30,7 +30,6 @@ export async function updateTravelOrderStatus(orderId, status) {
 }
 
 export async function fetchTravelOrders(filters = {}) {
-    console.log(api)
     return api.get('/travel-orders', { params: filters });
 }
 
