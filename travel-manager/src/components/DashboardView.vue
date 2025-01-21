@@ -42,8 +42,8 @@
                     <td>{{ order.return_date }}</td>
                     <td>{{ order.status }}</td>
                     <td>
-                        <button class="button-ap" @click="updateStatus(order.id, 'aprovado')">Aprovar</button>
-                        <button class="button-rp" @click="updateStatus(order.id, 'cancelado')">Cancelar</button>
+                        <button class="button-ap" @click="updateStatus(order.id, 'aprovado')" :disabled="order.status === 'aprovado'">Aprovar</button>
+                        <button class="button-rp" @click="updateStatus(order.id, 'cancelado')" :disabled="order.status === 'cancelado'">Cancelar</button>
                     </td>
                 </tr>
             </tbody>
@@ -148,6 +148,7 @@ th {
 
 td button {
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .button-ap {
@@ -164,5 +165,15 @@ td button {
     border: none;
     padding: 3%;
     border-radius: 5px;
+}
+
+.button-ap:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+.button-rp:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
 }
 </style>
