@@ -75,9 +75,9 @@ export default {
             }
         },
     },
-    mounted() {        
+    mounted() {    
         if (this.$store.getters.isAuthenticated) {
-            this.$store.dispatch('fetchTravelOrders');
+            fetchTravelOrders(); 
         }
     },
     computed: {

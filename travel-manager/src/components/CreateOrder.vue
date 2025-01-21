@@ -75,11 +75,12 @@ export default {
         async createOrder() {
             try {
                 await createTravelOrder(this.order);
-                alert('Pedido de viagem criado com sucesso!');
+                this.$store.dispatch('showAlert', { message: 'Pedido de viagem criado com sucesso!', type: 'success' });
+
                 this.$router.push('/dashboard'); // Redirect to Dashboard
             } catch (error) {
                 console.error('Error creating order:', error);
-                alert('Falha ao criar pedido de viagem. Por favor, tente novamente.');
+                this.$store.dispatch('showAlert', { message: 'Falha ao criar pedido de viagem. Por favor, tente novamente.', type: 'error' });
             }
         },
     },
